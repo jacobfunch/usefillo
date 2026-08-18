@@ -1,0 +1,52 @@
+{
+  "name": "@usefillo/mcp",
+  "version": "0.5.0",
+  "mcpName": "io.github.jacobfunch/usefillo",
+  "description": "Fillo MCP server — provision, scaffold, publish, and query forms from your coding agent.",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "forms",
+    "fillo",
+    "agent",
+    "ai-agent",
+    "llm",
+    "claude",
+    "cursor"
+  ],
+  "homepage": "https://fillo.so",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacobfunch/usefillo.git",
+    "directory": "packages/mcp"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "fillo-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "node --test test/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  }
+}

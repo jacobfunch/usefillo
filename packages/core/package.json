@@ -1,0 +1,54 @@
+{
+  "name": "@usefillo/core",
+  "version": "0.19.0",
+  "description": "Form schema, validation, logic engine and JS client for Fillo. Framework-agnostic.",
+  "license": "MIT",
+  "keywords": [
+    "forms",
+    "form-builder",
+    "validation",
+    "headless",
+    "typescript",
+    "schema",
+    "surveys",
+    "conditional-logic"
+  ],
+  "homepage": "https://fillo.so",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacobfunch/usefillo.git",
+    "directory": "packages/core"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "prepublishOnly": "node -e \"require('fs').accessSync('dist/index.js')\""
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  }
+}

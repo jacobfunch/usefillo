@@ -1,0 +1,1173 @@
+/**
+ * @usefillo/react default theme.
+ * Entirely optional — everything is driven by fillo-* classes and CSS variables,
+ * so you can theme with variables, override classes, or skip this file and
+ * style from scratch.
+ *
+ * SYNC: packages/dom/src/styles.css is byte-for-byte identical to this file
+ * (@usefillo/dom builds its published CSS from its own copy via
+ * scripts/build-css.mjs --src src/styles.css). Edit BOTH together.
+ */
+
+/* Specificity contract: every rule stays at single-class specificity —
+ * qualifiers are wrapped in :where() so one consumer class always wins.
+ * A lint test (packages/react/test) fails the build on regressions. */
+/* Cascade layers: these defaults live in the `components` layer so that, in
+ * apps using Tailwind (or any utility CSS in the `utilities` layer), YOUR
+ * classes always win over ours — className="bg-red-50" on an option just
+ * works. Without Tailwind the layer has no competition and nothing changes. */
+@layer theme, base, components, utilities;
+
+@layer components {
+  .fillo-form {
+    --fillo-primary: #18181b;
+    --fillo-primary: light-dark(#18181b, #fafafa);
+    --fillo-primary-contrast: #ffffff;
+    --fillo-primary-contrast: light-dark(#ffffff, #18181b);
+    --fillo-bg: transparent;
+    --fillo-text: #18181b;
+    --fillo-text: light-dark(#18181b, #f4f4f5);
+    --fillo-muted: #71717a;
+    --fillo-muted: light-dark(#71717a, #a1a1aa);
+    --fillo-border: #e4e4e7;
+    --fillo-border: light-dark(#e4e4e7, #3f3f46);
+    --fillo-error: #dc2626;
+    --fillo-error: light-dark(#dc2626, #f87171);
+    --fillo-radius: 10px;
+    --fillo-font: inherit;
+    /* The form's local type root. Default = inherit the host's font, so the
+       form blends in; set it once to pin or scale the WHOLE form — every
+       internal size is em-based and proportional to this. Prefer an ABSOLUTE
+       value (px): the not-open state nests a preview .fillo-form inside the
+       root .fillo-form, and a relative value would compound there. */
+    --fillo-font-size: 1em;
+    --fillo-control-bg: #ffffff;
+    --fillo-control-bg: light-dark(#ffffff, #18181b);
+
+    /* Unthemed forms follow the host's CSS color-scheme. The first value for
+       each token above is a safe light fallback for browsers without
+       light-dark(); explicit light/dark and auto remain available below. */
+    color-scheme: inherit;
+    font-family: var(--fillo-font);
+    font-size: var(--fillo-font-size);
+    color: var(--fillo-text);
+    background: var(--fillo-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    max-width: 100%;
+  }
+
+  .fillo-form[data-fillo-color-scheme="light"] {
+    color-scheme: light;
+  }
+
+  .fillo-form[data-fillo-color-scheme="auto"] {
+    color-scheme: light dark;
+  }
+
+  .fillo-form[data-fillo-color-scheme="dark"] {
+    --fillo-primary: #fafafa;
+    --fillo-primary-contrast: #18181b;
+    --fillo-text: #f4f4f5;
+    --fillo-muted: #a1a1aa;
+    --fillo-border: #3f3f46;
+    --fillo-error: #f87171;
+    --fillo-control-bg: #18181b;
+
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .fillo-form[data-fillo-color-scheme="auto"] {
+      --fillo-primary: #fafafa;
+      --fillo-primary-contrast: #18181b;
+      --fillo-text: #f4f4f5;
+      --fillo-muted: #a1a1aa;
+      --fillo-border: #3f3f46;
+      --fillo-error: #f87171;
+      --fillo-control-bg: #18181b;
+
+      color-scheme: dark;
+    }
+  }
+
+  .fillo-header { display: flex; flex-direction: column; gap: 0.5rem; }
+  .fillo-title { font-size: 1.6em; font-weight: 650; letter-spacing: 0; margin: 0; }
+  .fillo-form-description { color: var(--fillo-muted); margin: 0; line-height: 1.55; }
+  .fillo-page-title { font-size: 1.2em; font-weight: 600; margin: 0; }
+
+  .fillo-blocks { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  /* ---------- Field chrome ---------- */
+  .fillo-field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .fillo-label { font-weight: 550; font-size: 0.95em; }
+  :where(.fillo-field--error) .fillo-label { color: var(--fillo-error); }
+  /* Fillo marks the few optional fields rather than starring the many required
+     ones — so a clean label reads as required by default. */
+  .fillo-optional { color: var(--fillo-muted); font-weight: 400; font-size: 0.85em; }
+  .fillo-description { color: var(--fillo-muted); font-size: 0.85em; margin: 0; line-height: 1.5; }
+  .fillo-error { color: var(--fillo-error); font-size: 0.85em; font-weight: 500; line-height: 1.4; margin: 0; }
+  .fillo-submit-error { color: var(--fillo-error); font-size: 0.85em; font-weight: 500; margin: 0; }
+
+  /* ---------- Inputs ---------- */
+  .fillo-input {
+    appearance: none;
+    font: inherit;
+    color: var(--fillo-text);
+    background: var(--fillo-control-bg);
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    min-height: 2.5rem;
+    padding: 0.6rem 0.8rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fillo-input:focus-visible {
+    outline: none;
+    border-color: var(--fillo-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-primary) 15%, transparent);
+  }
+  :where(.fillo-field--error) .fillo-input { border-color: var(--fillo-error); }
+  :where(.fillo-field--error) .fillo-input:focus-visible {
+    border-color: var(--fillo-error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-error) 20%, transparent);
+    outline: none;
+  }
+  .fillo-textarea { resize: vertical; min-height: 6rem; }
+
+  /* Number field adornments: the wrapper draws the field's box (border/
+     radius/focus, mirrors .fillo-input above) and the nested input goes
+     borderless so prefix/suffix read as inside one control, not stacked
+     beside it like the phone field's country picker. */
+  .fillo-number {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    box-sizing: border-box;
+    min-height: 2.5rem;
+    background: var(--fillo-control-bg);
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    padding: 0.6rem 0.8rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+  .fillo-number:focus-within {
+    border-color: var(--fillo-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-primary) 15%, transparent);
+  }
+  :where(.fillo-field--error) .fillo-number { border-color: var(--fillo-error); }
+  :where(.fillo-field--error) .fillo-number:focus-within {
+    border-color: var(--fillo-error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-error) 20%, transparent);
+    outline: none;
+  }
+  :where(.fillo-number) .fillo-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+  :where(.fillo-number) .fillo-input:focus-visible { box-shadow: none; }
+  :where(.fillo-field--error) :where(.fillo-number) .fillo-input:focus-visible { outline: none; }
+  .fillo-number-prefix, .fillo-number-suffix { flex: 0 0 auto; color: var(--fillo-muted); }
+
+  /* Phone field: country picker + national input */
+  .fillo-phone { position: relative; display: flex; align-items: stretch; gap: 0.4rem; }
+  .fillo-phone-country { position: relative; flex: 0 0 auto; }
+  .fillo-phone-flag {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    height: 100%; min-height: 2.5rem; padding: 0 0.6rem;
+    font: inherit; color: var(--fillo-text);
+    background: var(--fillo-control-bg);
+    border: 1px solid var(--fillo-border); border-radius: var(--fillo-radius);
+    cursor: pointer; white-space: nowrap;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+  .fillo-phone-flag:focus-visible {
+    outline: none; border-color: var(--fillo-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-primary) 15%, transparent);
+  }
+  .fillo-phone-flag-emoji { font-size: 1.15em; line-height: 1; }
+  .fillo-phone-dial { font-variant-numeric: tabular-nums; color: var(--fillo-muted); }
+  .fillo-phone-caret { font-size: 0.65em; color: var(--fillo-muted); }
+  .fillo-phone-input { flex: 1 1 auto; min-width: 0; }
+  :where(.fillo-field--error) .fillo-phone-flag { border-color: var(--fillo-error); }
+  .fillo-phone-popover {
+    position: absolute; z-index: 30; top: calc(100% + 0.3rem); inset-inline-start: 0;
+    width: min(18rem, calc(100vw - 1rem));
+    max-width: var(--fillo-phone-popover-max-width, 84vw);
+    max-height: min(var(--fillo-phone-popover-max-height, 20rem), calc(100vh - 1rem));
+    padding: 0.4rem;
+    box-sizing: border-box; overflow: hidden;
+    transform: translateX(var(--fillo-phone-popover-offset-x, 0px));
+    display: flex; flex-direction: column; gap: 0.35rem;
+    background: var(--fillo-control-bg);
+    border: 1px solid var(--fillo-border); border-radius: var(--fillo-radius);
+    box-shadow: 0 12px 32px -14px rgba(0, 0, 0, 0.35);
+  }
+  .fillo-phone-popover--above { top: auto; bottom: calc(100% + 0.3rem); }
+  .fillo-phone-search {
+    appearance: none; font: inherit; width: 100%; box-sizing: border-box;
+    color: var(--fillo-text); background: var(--fillo-bg);
+    border: 1px solid var(--fillo-border);
+    border-radius: calc(var(--fillo-radius) - 3px); padding: 0.45rem 0.6rem;
+  }
+  .fillo-phone-search:focus-visible { outline: none; border-color: var(--fillo-primary); }
+  .fillo-phone-list {
+    flex: 1 1 auto; min-height: 0;
+    list-style: none; margin: 0; padding: 0; max-height: 14rem; overflow-y: auto;
+  }
+  .fillo-phone-option {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.45rem 0.5rem; border-radius: calc(var(--fillo-radius) - 3px);
+    cursor: pointer; color: var(--fillo-text);
+  }
+  .fillo-phone-option--active { background: color-mix(in srgb, var(--fillo-primary) 10%, transparent); }
+  .fillo-phone-option-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fillo-phone-option-dial { color: var(--fillo-muted); font-variant-numeric: tabular-nums; }
+  .fillo-phone-empty { padding: 0.6rem 0.5rem; color: var(--fillo-muted); }
+  .fillo-select-wrap {
+    position: relative;
+    display: block;
+  }
+  .fillo-select {
+    cursor: pointer;
+    padding-inline-end: 2.45rem;
+  }
+  .fillo-select-icon {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 0.9rem;
+    width: 0.62rem;
+    height: 0.62rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    color: var(--fillo-muted);
+    transform: translateY(-65%) rotate(45deg);
+    transition: color 120ms ease;
+  }
+  :where(.fillo-select-wrap:focus-within) .fillo-select-icon { color: var(--fillo-primary); }
+
+  /* ---------- Choices ---------- */
+  .fillo-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .fillo-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+    padding: 0.55rem 0.8rem;
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .fillo-option:hover { border-color: color-mix(in srgb, var(--fillo-primary) 45%, var(--fillo-border)); }
+  .fillo-option:focus-within {
+    border-color: var(--fillo-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-primary) 14%, transparent);
+  }
+  :where(.fillo-field--error) .fillo-option {
+    border-color: var(--fillo-error);
+    background: color-mix(in srgb, var(--fillo-error) 2%, var(--fillo-control-bg));
+  }
+  :where(.fillo-field--error) .fillo-option:focus-within {
+    border-color: var(--fillo-error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-error) 20%, transparent);
+    outline: none;
+  }
+  .fillo-option--selected {
+    border-color: var(--fillo-primary);
+    background: color-mix(in srgb, var(--fillo-primary) 6%, var(--fillo-control-bg));
+  }
+  .fillo-option-input {
+    accent-color: var(--fillo-primary);
+    flex: 0 0 auto;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+  }
+  .fillo-option-input:focus-visible { outline: none; }
+  :where(.fillo-option--has-icon) .fillo-option-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .fillo-option-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: 0 0 auto;
+    color: var(--fillo-muted);
+    transition: color 120ms ease;
+  }
+  :where(.fillo-option--selected) .fillo-option-icon { color: var(--fillo-primary); }
+  /* Selected marker for icon-mode options — the non-color signal (the native
+     input is visually hidden there, so forced-colors has nothing else). */
+  .fillo-option-check { flex: 0 0 auto; margin-inline-start: auto; color: var(--fillo-primary); }
+  .fillo-option-label { font-size: 1em; }
+
+  .fillo-option-main {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+  .fillo-option--with-other {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  :where(.fillo-option--with-other) .fillo-option-label {
+    font-weight: 550;
+  }
+
+  /* ---------- Toggle checkbox ---------- */
+  .fillo-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+    padding: 0.65rem 0.8rem;
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+  }
+  .fillo-toggle:hover { border-color: color-mix(in srgb, var(--fillo-primary) 45%, var(--fillo-border)); }
+  .fillo-toggle-copy { min-width: 0; }
+  .fillo-toggle-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .fillo-toggle-track {
+    position: relative;
+    display: inline-flex;
+    width: 2.35rem;
+    height: 1.35rem;
+    flex: 0 0 auto;
+    align-items: center;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--fillo-muted) 18%, var(--fillo-control-bg));
+    box-shadow: inset 0 0 0 1px var(--fillo-border);
+    transition: background 160ms ease, box-shadow 160ms ease;
+  }
+  .fillo-toggle-thumb {
+    width: 1rem;
+    height: 1rem;
+    margin-inline-start: 0.18rem;
+    border-radius: 999px;
+    background: var(--fillo-control-bg);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--fillo-text) 18%, transparent);
+    transition: transform 160ms ease, background 160ms ease;
+  }
+  :where(.fillo-toggle-input:checked) + .fillo-toggle-track {
+    background: var(--fillo-primary);
+    box-shadow: inset 0 0 0 1px var(--fillo-primary);
+  }
+  :where(.fillo-toggle-input:checked) + :where(.fillo-toggle-track) .fillo-toggle-thumb {
+    transform: translateX(1rem);
+    background: var(--fillo-primary-contrast);
+  }
+  /* RTL: the thumb travels toward the track's other edge. Deviates from the
+     spec's literal selector text, which left three fillo-* classes bare
+     outside :where() and would fail this file's own specificity lint
+     (styles-lint.test.mjs) — wrapped each qualifier individually instead,
+     mirroring the checked+track rule directly above. */
+  :where([dir="rtl"]) :where(.fillo-toggle-input:checked) + :where(.fillo-toggle-track) .fillo-toggle-thumb {
+    transform: translateX(-1rem);
+  }
+  :where(.fillo-toggle-input:focus-visible) + .fillo-toggle-track {
+    box-shadow:
+      inset 0 0 0 1px var(--fillo-primary),
+      0 0 0 3px color-mix(in srgb, var(--fillo-primary) 15%, transparent);
+  }
+  :where(.fillo-field--error) .fillo-toggle { border-color: var(--fillo-error); }
+  :where(.fillo-field--error) :where(.fillo-toggle-input:focus-visible) + .fillo-toggle-track {
+    box-shadow:
+      inset 0 0 0 1px var(--fillo-error),
+      0 0 0 3px color-mix(in srgb, var(--fillo-error) 20%, transparent);
+    outline: none;
+  }
+  .fillo-toggle:where(:has(.fillo-toggle-input:checked)) {
+    border-color: var(--fillo-primary);
+    background: color-mix(in srgb, var(--fillo-primary) 5%, var(--fillo-control-bg));
+  }
+
+  /* "Other" free-text input — nested inside choice rows, block under dropdowns. */
+  .fillo-other-input {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    padding: 0.5rem 0.7rem;
+    font-size: 1em;
+    background: color-mix(in srgb, var(--fillo-primary) 3%, var(--fillo-control-bg));
+  }
+  .fillo-other-input--block {
+    margin-top: 0.45rem;
+    padding: 0.55rem 0.8rem;
+  }
+
+  /* ---------- Rating ---------- */
+  .fillo-rating { display: flex; gap: 0.25rem; }
+  .fillo-star {
+    font-size: 1.75em;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--fillo-muted);
+    padding: 0.1rem;
+    transition: color 100ms ease, transform 100ms ease;
+  }
+  .fillo-star:hover { transform: scale(1.15); }
+  .fillo-star--active { color: var(--fillo-primary); }
+  /* :focus-visible treatment standardized below (P1.1 solid-outline block). */
+
+  /* ---------- Linear scale ---------- */
+  /* Steps share one row and shrink to fit — an 11-step NPS scale must never
+     wrap onto a second line, even in narrow embeds. */
+  .fillo-scale { display: flex; gap: 0.35rem; }
+  .fillo-scale-step {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.5rem 0.15rem;
+    font: inherit;
+    font-size: 0.92em;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  }
+  .fillo-scale-step:hover { border-color: var(--fillo-primary); }
+  .fillo-scale-step:focus-visible {
+    outline: none;
+    border-color: var(--fillo-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-primary) 15%, transparent);
+  }
+  :where(.fillo-field--error) .fillo-scale-step:focus-visible {
+    border-color: var(--fillo-error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-error) 20%, transparent);
+    outline: none;
+  }
+  .fillo-scale-step--active {
+    background: var(--fillo-primary);
+    border-color: var(--fillo-primary);
+    color: var(--fillo-primary-contrast);
+  }
+  .fillo-scale-labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--fillo-muted);
+    font-size: 0.78em;
+    margin-top: 0.35rem;
+  }
+
+  /* ---------- Ranking ---------- */
+  .fillo-ranking { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+  .fillo-ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+    padding: 0.5rem 0.7rem;
+  }
+  .fillo-ranking-index {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--fillo-primary) 10%, transparent);
+    color: var(--fillo-primary);
+    font-size: 0.78em;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+  .fillo-ranking-label { flex: 1; font-size: 1em; }
+  .fillo-ranking-controls { display: flex; gap: 0.2rem; }
+  .fillo-ranking-move {
+    font: inherit;
+    border: 1px solid var(--fillo-border);
+    background: transparent;
+    border-radius: calc(var(--fillo-radius) * 0.6);
+    cursor: pointer;
+    padding: 0.15rem 0.45rem;
+    color: var(--fillo-muted);
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .fillo-ranking-move:hover:not(:disabled) { color: var(--fillo-primary); border-color: var(--fillo-primary); }
+  /* opacity set below (P1.3 block, raised to 0.5 for the internal 3:1
+     disabled-contrast advisory); cursor stays here. */
+  .fillo-ranking-move:disabled { cursor: default; }
+
+  /* ---------- Matrix ---------- */
+  .fillo-matrix-wrap { overflow-x: auto; }
+  .fillo-matrix { border-collapse: collapse; width: 100%; font-size: 0.9em; }
+  :where(.fillo-matrix) th, :where(.fillo-matrix) td {
+    padding: 0.55rem 0.7rem;
+    text-align: center;
+    border-bottom: 1px solid var(--fillo-border);
+  }
+  .fillo-matrix thead th { color: var(--fillo-muted); font-weight: 500; font-size: 0.89em; }
+  .fillo-matrix tbody th { text-align: start; font-weight: 500; }
+  .fillo-matrix tbody tr:last-child th, .fillo-matrix tbody tr:last-child td { border-bottom: none; }
+  .fillo-matrix-cell:focus-within {
+    border-radius: var(--fillo-radius);
+    outline: 2px solid var(--fillo-primary);
+    outline-offset: 2px;
+  }
+  :where(.fillo-field--error) .fillo-matrix-cell:focus-within { outline-color: var(--fillo-error); }
+
+  /* ---------- Calculated ---------- */
+  /* A quiet computed-value line, not a control: no border or input chrome —
+     the slightly heavier tabular number is the only emphasis. */
+  .fillo-calculated-value {
+    font-size: 1.05em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--fillo-text);
+  }
+  /* Unanswered (an incomplete calculation renders an em dash). */
+  .fillo-calculated-value--empty { color: var(--fillo-muted); font-weight: 400; }
+
+  /* ---------- Signature ---------- */
+  .fillo-signature {
+    position: relative;
+    border: 1.5px dashed var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+  }
+  .fillo-signature-canvas {
+    display: block;
+    width: 100%;
+    height: 9rem;
+    color: var(--fillo-text);
+    touch-action: none;
+    cursor: crosshair;
+  }
+  .fillo-signature-hint {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--fillo-muted);
+    font-size: 0.85em;
+    pointer-events: none;
+  }
+  .fillo-signature-clear {
+    position: absolute;
+    top: 0.4rem;
+    inset-inline-end: 0.4rem;
+    font: inherit;
+    font-size: 0.75em;
+    border: 1px solid var(--fillo-border);
+    border-radius: calc(var(--fillo-radius) * 0.6);
+    background: var(--fillo-control-bg);
+    color: var(--fillo-muted);
+    padding: 0.15rem 0.5rem;
+    cursor: pointer;
+  }
+  .fillo-signature-clear:hover { color: var(--fillo-error); border-color: var(--fillo-error); }
+
+  /* Type-to-sign: the keyboard/screen-reader path under the canvas. */
+  .fillo-signature-type {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.55rem;
+  }
+  .fillo-signature-type-label {
+    color: var(--fillo-muted);
+    font-size: 0.8em;
+  }
+  .fillo-signature-type-input {
+    margin-top: 0;
+  }
+
+  /* ---------- File upload ---------- */
+  .fillo-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1.5px dashed var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    padding: 1.6rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    background: color-mix(in srgb, var(--fillo-control-bg) 60%, transparent);
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .fillo-dropzone:hover,
+  .fillo-dropzone--over {
+    border-color: var(--fillo-primary);
+    background: color-mix(in srgb, var(--fillo-primary) 4%, var(--fillo-control-bg));
+  }
+  .fillo-dropzone:focus-visible {
+    outline: none;
+    border-color: var(--fillo-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-primary) 15%, transparent);
+  }
+  :where(.fillo-field--error) .fillo-dropzone {
+    border-color: var(--fillo-error);
+    background: color-mix(in srgb, var(--fillo-error) 2%, var(--fillo-control-bg));
+  }
+  :where(.fillo-field--error) .fillo-dropzone:focus-visible {
+    border-color: var(--fillo-error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fillo-error) 20%, transparent);
+    outline: none;
+  }
+  .fillo-dropzone--disabled { cursor: not-allowed; opacity: 0.6; }
+  .fillo-dropzone-title { font-weight: 550; font-size: 0.95em; }
+  .fillo-dropzone-hint { color: var(--fillo-muted); font-size: 0.82em; }
+
+  .fillo-files { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; margin: 0; padding: 0; }
+  .fillo-file {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.45rem 0.625rem;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    padding: 0.625rem 0.75rem;
+    font-size: 0.88em;
+    background: var(--fillo-control-bg);
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  .fillo-file--failed {
+    border-color: color-mix(in srgb, var(--fillo-error) 32%, var(--fillo-border));
+    border-inline-start: 3px solid var(--fillo-error);
+    background: color-mix(in srgb, var(--fillo-error) 4%, var(--fillo-control-bg));
+  }
+  .fillo-file-state {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--fillo-muted);
+  }
+  .fillo-file-state--done { color: var(--fillo-primary); }
+  .fillo-file-state--failed { color: var(--fillo-error); }
+  .fillo-file-state-icon {
+    display: block;
+    width: 1.35rem;
+    height: 1.35rem;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fillo-file-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    text-align: start;
+  }
+  .fillo-file-name {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .fillo-file-meta {
+    color: var(--fillo-muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  .fillo-file-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    white-space: nowrap;
+  }
+  .fillo-file-error {
+    color: var(--fillo-error);
+    font-size: 0.93em;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+  .fillo-file-remove {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--fillo-muted);
+    line-height: 1;
+    padding: 0;
+  }
+  .fillo-file-action-icon {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+  }
+  .fillo-file-remove:hover { color: var(--fillo-text); }
+  .fillo-file-retry {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--fillo-primary);
+    font: inherit;
+    font-weight: 550;
+    padding: 0 0.5rem;
+  }
+  .fillo-file-retry:hover { text-decoration: underline; }
+  .fillo-progress {
+    grid-column: 2 / -1;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--fillo-border);
+    overflow: hidden;
+  }
+  .fillo-progress-bar {
+    display: block;
+    height: 100%;
+    background: var(--fillo-primary);
+    border-radius: inherit;
+    transition: width 200ms ease;
+  }
+
+  /* ---------- Content blocks ---------- */
+  .fillo-heading { font-size: 1.15em; font-weight: 600; margin: 0.5rem 0 0; }
+  .fillo-paragraph { color: var(--fillo-muted); line-height: 1.6; margin: 0; }
+  .fillo-divider { border: none; border-top: 1px solid var(--fillo-border); margin: 0.25rem 0; }
+
+  /* ---------- Footer / buttons ---------- */
+  .fillo-footer { display: flex; justify-content: flex-end; gap: 0.6rem; }
+  .fillo-button {
+    font: inherit;
+    font-weight: 550;
+    border-radius: var(--fillo-radius);
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: opacity 120ms ease, transform 60ms ease;
+  }
+  .fillo-button:active { transform: translateY(1px); }
+  .fillo-button:disabled { opacity: 0.55; cursor: not-allowed; }
+  /* :focus-visible treatment standardized below (P1.1 solid-outline block). */
+  .fillo-button--primary { background: var(--fillo-primary); color: var(--fillo-primary-contrast); }
+  .fillo-button--ghost { background: transparent; color: var(--fillo-text); border-color: var(--fillo-border); }
+
+  /* ---------- Progress (multi-page) ---------- */
+  .fillo-progress-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--fillo-border);
+    overflow: hidden;
+  }
+  .fillo-progress-fill {
+    width: var(--fillo-progress-value, 0%);
+    height: 100%;
+    background: var(--fillo-primary);
+    border-radius: inherit;
+    transition: width 300ms ease;
+  }
+
+  /* ---------- Closed ---------- */
+  .fillo-closed {
+    text-align: center;
+    color: var(--fillo-muted);
+    padding: 2rem 1rem;
+    margin: 0;
+  }
+
+  /* ---------- Not-open state (draft / not-accepting, production) ---------- */
+  /* Keep the display-only preview in the DOM as a safety fallback for hosts
+     that skip the defaults, but present a calm empty state when this stylesheet
+     is loaded. Respondents should not have to read a blurred form to understand
+     that it is unavailable. */
+  .fillo-form--not-open { position: relative; }
+  .fillo-not-open-preview {
+    display: none;
+  }
+  /* The preview's controls sit in one natively disabled fieldset; keep it
+     invisible in the layout (it inherits the form's own column gap). */
+  .fillo-not-open-fields {
+    display: flex;
+    flex-direction: column;
+    gap: inherit;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .fillo-not-open-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  .fillo-not-open-title { margin: 0; font-size: 1.05em; font-weight: 650; letter-spacing: 0; }
+  .fillo-not-open-body {
+    max-width: 26rem;
+    margin: 0;
+    font-size: 0.875em;
+    color: var(--fillo-muted);
+    line-height: 1.5;
+  }
+
+  /* ---------- Success ---------- */
+  .fillo-success { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.55rem; text-align: center; padding: 2rem 1rem; }
+  /* An affirming, filled mark: a solid primary disc with a contrast-colored
+     check — reads as "done and good", not a faint gray ring. Both tokens flip
+     per theme, so it stays legible on light and dark and honors the host's
+     --fillo-primary override. */
+  .fillo-success-mark {
+    width: 2.5rem; height: 2.5rem;
+    display: grid; place-items: center;
+    border-radius: 999px;
+    background: var(--fillo-primary);
+  }
+  .fillo-success-mark::before {
+    content: "";
+    width: 0.7rem; height: 0.38rem;
+    border-left: 2.5px solid var(--fillo-primary-contrast);
+    border-bottom: 2.5px solid var(--fillo-primary-contrast);
+    transform: translateY(-0.09rem) rotate(-45deg);
+  }
+  .fillo-success-title { margin: 0; font-size: 1.05em; letter-spacing: 0; }
+  .fillo-success-message { margin: 0; font-size: 0.875em; color: var(--fillo-muted); }
+
+  /* Honeypot — off-screen, never display:none (bots check that) */
+  .fillo-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Visually hidden but exposed to assistive tech — for aria-live narration. */
+  .fillo-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ---------- Loading skeleton ---------- */
+  .fillo-form--loading { gap: 0.9rem; }
+  .fillo-skeleton {
+    height: 2.4rem;
+    border-radius: var(--fillo-radius);
+    background: linear-gradient(90deg, var(--fillo-border) 25%, color-mix(in srgb, var(--fillo-border) 40%, transparent) 50%, var(--fillo-border) 75%);
+    background-size: 200% 100%;
+    animation: fillo-shimmer 1.4s infinite;
+  }
+  .fillo-skeleton--short { width: 40%; }
+  @keyframes fillo-shimmer {
+    to { background-position: -200% 0; }
+  }
+
+  /* Respect a reduced-motion preference: drop transitions, the press nudge,
+     the rating hover scale, and the skeleton shimmer. */
+  @media (prefers-reduced-motion: reduce) {
+    .fillo-form *,
+    .fillo-form *::before,
+    .fillo-form *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .fillo-button:active { transform: none; }
+    .fillo-star:hover { transform: none; }
+    .fillo-skeleton { animation: none; }
+  }
+
+  /* ---------- "Powered by Fillo" badge ---------- */
+  .fillo-powered {
+    display: block;
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.75em;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--fillo-muted);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 120ms ease;
+  }
+  .fillo-powered:hover { opacity: 1; }
+
+  /* ---------- Dev-only "no client" notice (stripped in production builds) ---------- */
+  .fillo-devwarning {
+    margin-bottom: 1rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid #f59e0b;
+    border-radius: var(--fillo-radius);
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 0.82em;
+    line-height: 1.45;
+  }
+  .fillo-devwarning code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.92em;
+    background: #fef3c7;
+    padding: 0.05em 0.3em;
+    border-radius: 4px;
+  }
+
+  /* ---------- Dev-only "Preview" badge (explicit preview prop) ---------- */
+  .fillo-preview-badge {
+    align-self: flex-start;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid #f59e0b;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.7em;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Saved-progress resume notice ---------- */
+  .fillo-resume {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+    color: var(--fillo-muted);
+    font-size: 0.82em;
+    line-height: 1.45;
+  }
+  .fillo-resume-clear {
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--fillo-primary);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+  /* :focus-visible treatment standardized below (P1.1 solid-outline block). */
+
+  /* ---------- Human-verification challenge (Turnstile) ---------- */
+  .fillo-turnstile-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.25rem 0 1rem;
+  }
+  /* Cloudflare draws a fixed-size widget inside; just give it room to breathe. */
+  .fillo-turnstile {
+    min-height: 65px;
+  }
+  /* Bridge mode: the widget lives in Fillo's iframe — keep it flush. */
+  .fillo-turnstile-frame {
+    display: block;
+    border: 0;
+  }
+  /* interaction-only: while the check runs invisibly, reserve no space. */
+  .fillo-turnstile[data-fillo-challenge-visible="false"] {
+    min-height: 0;
+  }
+  .fillo-turnstile-error {
+    margin: 0;
+    color: var(--fillo-error);
+    font-size: 0.82em;
+    line-height: 1.45;
+  }
+
+  /* Repeating group: instance cards + add/remove controls. */
+  .fillo-group { display: flex; flex-direction: column; gap: 0.8rem; }
+  .fillo-group-instance {
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .fillo-group-instance:focus-visible { outline: 2px solid var(--fillo-primary); outline-offset: 2px; }
+  .fillo-group-instance-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .fillo-group-instance-title { margin: 0; font-size: 0.95em; font-weight: 600; }
+  .fillo-group-add {
+    align-self: flex-start;
+    font: inherit;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--fillo-border);
+    border-radius: var(--fillo-radius);
+    background: var(--fillo-control-bg);
+    color: var(--fillo-text);
+    cursor: pointer;
+  }
+  .fillo-group-add:disabled { opacity: 0.5; cursor: default; }
+  .fillo-group-remove {
+    font-size: 1.1em;
+    line-height: 1;
+    padding: 0 0.2rem;
+    border: none;
+    background: none;
+    color: var(--fillo-muted);
+    cursor: pointer;
+  }
+  .fillo-group-remove:disabled { opacity: 0.5; cursor: default; }
+  /* ---------- Accessibility: focus rings, pointer targets, forced-colors
+     (input-quality audit P1.1-P1.3) ---------- */
+  /* Focus visibility: controls without a compensating border swap get a
+     solid ring — translucent box-shadows compute under 3:1 (WCAG 1.4.11)
+     and vanish in forced-colors. */
+  .fillo-star:focus-visible,
+  .fillo-button:focus-visible,
+  .fillo-resume-clear:focus-visible,
+  .fillo-ranking-move:focus-visible,
+  .fillo-file-remove:focus-visible,
+  .fillo-file-retry:focus-visible,
+  .fillo-signature-clear:focus-visible,
+  .fillo-group-add:focus-visible,
+  .fillo-group-remove:focus-visible {
+    outline: 2px solid var(--fillo-primary);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+  :where(.fillo-field--error) .fillo-star:focus-visible { outline-color: var(--fillo-error); }
+
+  /* Minimum pointer targets (WCAG 2.2 AA 24px; 1.5rem = 24px @16px root). */
+  .fillo-ranking-move,
+  .fillo-signature-clear,
+  .fillo-group-add,
+  .fillo-group-remove {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Upload row actions use a calmer, easier 32px target. */
+  .fillo-file-remove,
+  .fillo-file-retry {
+    min-width: 2rem;
+    min-height: 2rem;
+  }
+  .fillo-star { min-width: 1.75rem; min-height: 1.75rem; }
+  .fillo-matrix-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.5rem;
+    padding: 0.35rem;
+    cursor: pointer;
+  }
+
+  /* Placeholder joins the token system (was UA-default, ungoverned). */
+  .fillo-input::placeholder,
+  .fillo-phone-search::placeholder { color: var(--fillo-muted); }
+
+  /* Ranking disabled state: WCAG-exempt, but keep it findable (contract's
+     internal 3:1 advisory). */
+  .fillo-ranking-move:disabled { opacity: 0.5; }
+
+  /* Matrix on narrow viewports: stacked rows, never a horizontal scroll
+     trap. Column names come from data-label (set by both renderers). */
+  @media (max-width: 30rem) {
+    .fillo-file { gap: 0.4rem 0.5rem; padding: 0.55rem 0.625rem; }
+    .fillo-matrix thead { position: absolute; width: 1px; height: 1px;
+      overflow: hidden; clip-path: inset(50%); }
+    .fillo-matrix, .fillo-matrix tbody, .fillo-matrix tr,
+    .fillo-matrix th, .fillo-matrix td { display: block; width: 100%; }
+    .fillo-matrix tbody th { padding: 0.55rem 0 0.15rem; }
+    .fillo-matrix td { display: flex; align-items: center; gap: 0.5rem; }
+    .fillo-matrix td::before { content: attr(data-label);
+      flex: 1 1 auto; font-size: 0.85em; }
+    /* Deviates from the spec's literal ".fillo-matrix .fillo-matrix-cell"
+       text (two bare fillo-* classes, no :where()) — that fails this file's
+       own specificity lint (styles-lint.test.mjs: "wrap qualifiers in
+       :where()"). Wrapped the ancestor qualifier instead. */
+    :where(.fillo-matrix) .fillo-matrix-cell { flex: 0 0 auto; }
+  }
+
+  /* Forced-colors: restore what author colors can't carry. */
+  @media (forced-colors: active) {
+    .fillo-file--failed {
+      border-color: CanvasText;
+      border-inline-start-color: Highlight;
+      background: Canvas;
+    }
+    .fillo-file-state--failed { color: Highlight; }
+    .fillo-star--active,
+    .fillo-scale-step--active,
+    :where(.fillo-option--selected) {
+      outline: 2px solid SelectedItem;
+      outline-offset: -2px;
+    }
+    .fillo-input:focus-visible,
+    .fillo-number:focus-within,
+    .fillo-phone-flag:focus-visible,
+    .fillo-phone-search:focus-visible,
+    .fillo-option:focus-within,
+    :where(.fillo-toggle-input:focus-visible) + .fillo-toggle-track,
+    .fillo-star:focus-visible,
+    .fillo-scale-step:focus-visible,
+    .fillo-matrix-cell:focus-within,
+    .fillo-dropzone:focus-visible,
+    .fillo-select:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
+}

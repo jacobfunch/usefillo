@@ -1,0 +1,63 @@
+{
+  "name": "@usefillo/dom",
+  "version": "0.19.0",
+  "description": "Framework-agnostic DOM renderer and web component for embedding Fillo forms.",
+  "license": "MIT",
+  "keywords": [
+    "forms",
+    "form-builder",
+    "dom",
+    "web-components",
+    "embed",
+    "typescript",
+    "custom-element",
+    "vue",
+    "svelte",
+    "vanilla-js"
+  ],
+  "homepage": "https://fillo.so",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacobfunch/usefillo.git",
+    "directory": "packages/dom"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css",
+    "./dist/standalone.global.js"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./standalone": "./dist/standalone.global.js",
+    "./styles.css": "./dist/styles.css",
+    "./styles.unlayered.css": "./dist/styles.unlayered.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup && node ../react/scripts/build-css.mjs --src src/styles.css --out dist",
+    "dev": "tsup --watch --onSuccess 'cp src/styles.css dist/styles.css'",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.type-tests.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "prepublishOnly": "node -e \"require('fs').accessSync('dist/index.js');require('fs').accessSync('dist/styles.css');require('fs').accessSync('dist/styles.unlayered.css')\""
+  },
+  "dependencies": {
+    "@usefillo/core": "workspace:^"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.0",
+    "jsdom": "^25.0.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  }
+}
