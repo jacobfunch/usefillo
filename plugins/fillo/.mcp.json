@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fillo": {
+      "type": "http",
+      "url": "https://fillo.so/api/mcp"
+    }
+  }
+}

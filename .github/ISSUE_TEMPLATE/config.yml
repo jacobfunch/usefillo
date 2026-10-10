@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://fillo.so/docs
+    about: Reference, guides, and API docs for building with Fillo.
+  - name: Building with a coding agent
+    url: https://fillo.so/agents
+    about: Set up the Fillo Agent Skill and the Build with AI flow.
+  - name: Fillo website
+    url: https://fillo.so
+    about: Product, pricing, and how to reach the team.
