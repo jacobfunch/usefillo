@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build with Fillo"
+  short_description: "Build hosted and native forms with Fillo"
+  default_prompt: "Use $build-with-fillo to create a hosted file request or add a native Fillo form to this app."

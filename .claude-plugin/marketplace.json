@@ -1,0 +1,17 @@
+{
+  "name": "fillo",
+  "description": "Fillo's official plugins: build product forms from your coding agent.",
+  "owner": {
+    "name": "Fillo",
+    "email": "hello@fillo.so"
+  },
+  "plugins": [
+    {
+      "name": "fillo",
+      "source": "./plugins/fillo",
+      "description": "Build hosted and native product forms with Fillo from your coding agent: the Build with Fillo skill plus the hosted Fillo MCP server.",
+      "homepage": "https://fillo.so/agents",
+      "category": "development"
+    }
+  ]
+}

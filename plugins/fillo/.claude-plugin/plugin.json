@@ -1,0 +1,14 @@
+{
+  "name": "fillo",
+  "displayName": "Fillo",
+  "description": "Build hosted and native product forms with Fillo from your coding agent.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Fillo",
+    "url": "https://fillo.so"
+  },
+  "homepage": "https://fillo.so/agents",
+  "repository": "https://github.com/jacobfunch/usefillo",
+  "license": "MIT",
+  "keywords": ["forms", "file-requests", "uploads", "headless-forms", "react", "agents"]
+}

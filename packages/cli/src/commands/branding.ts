@@ -1,0 +1,78 @@
+import { callApi, failed } from "../lib/api.js";
+import type { Flags } from "../lib/flags.js";
+import { boldRaw, die, dim, dimRaw, emitResult, jsonMode, okMark } from "../lib/output.js";
+import type { Command } from "../lib/registry.js";
+
+/**
+ * `fillo branding` — the workspace's "Powered by Fillo" checkbox, over the
+ * human's `fcli_` credential. `off` hides the badge (needs the Everything
+ * plan; the server enforces it and explains the Settings step when not),
+ * `on` shows it again, no argument prints the current state. Subscribing is
+ * deliberately NOT a CLI action — an owner or admin does that in Settings →
+ * Billing & plan. Agents flip the badge switch; they never buy the plan.
+ */
+
+type BrandingBody = {
+  plan?: "free" | "pro";
+  showBranding?: boolean;
+  poweredBy?: boolean;
+  canHide?: boolean;
+  error?: string;
+};
+
+function printState(body: BrandingBody) {
+  const plan = body.plan === "pro" ? "Everything" : "Free";
+  console.log(`  Plan:   ${plan}`);
+  console.log(`  Badge:  ${body.poweredBy ? "shown" : "hidden"}`);
+  // Gate on the server's own verdict, not the plan name — it stays correct if
+  // the entitlement rule ever changes.
+  if (body.canHide === false) {
+    console.log(dim("  Turning it off needs the Everything plan (Settings → Billing & plan)."));
+  }
+}
+
+async function branding(subcommand: string | undefined, flags: Flags) {
+  if (subcommand === "help") return brandingHelp();
+  if (subcommand !== undefined && subcommand !== "on" && subcommand !== "off") {
+    die(`Unknown branding command: ${subcommand} (expected on, off, or nothing for status).`);
+  }
+  const body = await callApi<BrandingBody>(
+    "/cli/workspace/branding",
+    subcommand === undefined
+      ? {}
+      : { method: "PATCH", body: JSON.stringify({ show: subcommand === "on" }) },
+    { fallback: failed(`branding ${subcommand ?? "status"}`) },
+  );
+  if (jsonMode(flags)) return emitResult(body);
+  console.log("");
+  if (subcommand !== undefined) {
+    console.log(
+      `  ${okMark()} Badge ${body.poweredBy ? "shown" : "hidden"} on Fillo-rendered forms.\n`,
+    );
+  }
+  printState(body);
+  console.log("");
+}
+
+function brandingHelp() {
+  console.log(`
+  ${boldRaw("fillo branding")} — the workspace's "Powered by Fillo" badge
+
+  ${boldRaw("Commands")}
+    branding           Print the current badge state
+    branding off       Hide the badge on Fillo-rendered forms (Everything plan)
+    branding on        Show the badge again
+
+  ${dimRaw("Hiding needs the Everything plan: a workspace owner or admin subscribes")}
+  ${dimRaw("in Settings → Billing & plan.")}
+  ${dimRaw("The CLI never buys the plan. Headless embeds never show a badge.")}
+  ${dimRaw("--json prints the raw server response on stdout.")}
+`);
+}
+
+export const brandingCommand: Command = {
+  name: "branding",
+  flags: [],
+  run: (args, flags) => branding(args[0], flags),
+  help: brandingHelp,
+};
