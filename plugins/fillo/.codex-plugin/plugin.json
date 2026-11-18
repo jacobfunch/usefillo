@@ -1,0 +1,34 @@
+{
+  "name": "fillo",
+  "version": "0.1.3",
+  "description": "Build hosted and native product forms with Fillo from your coding agent.",
+  "author": {
+    "name": "Fillo",
+    "url": "https://fillo.so"
+  },
+  "homepage": "https://fillo.so/agents",
+  "license": "MIT",
+  "keywords": ["forms", "file-requests", "uploads", "headless-forms", "react", "agents"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Fillo",
+    "shortDescription": "Build forms in your product",
+    "longDescription": "Create hosted file requests or author, style, sync, and verify native Fillo forms inside an existing product without an iframe.",
+    "developerName": "Fillo",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://fillo.so",
+    "supportURL": "https://fillo.so/contact",
+    "privacyPolicyURL": "https://fillo.so/legal/privacy",
+    "termsOfServiceURL": "https://fillo.so/legal/terms",
+    "defaultPrompt": [
+      "Create a hosted file request with my storage.",
+      "Add a native Fillo form to this app.",
+      "Match this Fillo form to my app's UI."
+    ],
+    "brandColor": "#26251E",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  }
+}

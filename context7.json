@@ -1,0 +1,18 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Fillo",
+  "description": "Headless form infrastructure: build a form in a hosted editor or in code, then render it natively inside your own product — React, Vue, Svelte, Astro, or plain browser JavaScript — with one shared schema driving validation, browser-direct uploads, and responses. No iframe.",
+  "folders": [
+    "packages/core",
+    "packages/react",
+    "packages/dom",
+    "packages/cli",
+    "packages/mcp",
+    "plugins/fillo/skills/build-with-fillo"
+  ],
+  "excludeFolders": [
+    "dist",
+    "node_modules",
+    "test"
+  ]
+}
